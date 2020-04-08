@@ -16,13 +16,13 @@ type BooksRepo struct {
 }
 
 func (r *BooksRepo) GetById(id string) (dto.Book, error) {
-	ctx, _ := context.WithTimeout(context.Background(), Database.Timeout)
+	ctx, _ := context.WithTimeout(context.Background(), database.Timeout)
 	objectId, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
 		return dto.Book{}, err
 	}
 
-	findResult := Database.GetDB().Collection(r.CollectionName).FindOne(ctx, bson.M{"_id": objectId})
+	findResult := database.getDB().Collection(r.CollectionName).FindOne(ctx, bson.M{"_id": objectId})
 	if findResult.Err() != nil {
 		return dto.Book{}, findResult.Err()
 	}
@@ -78,9 +78,9 @@ func (r *BooksRepo) GetById(id string) (dto.Book, error) {
 }
 
 func (r *BooksRepo) Save(book dto.Book) error {
-	ctx, _ := context.WithTimeout(context.Background(), Database.Timeout)
+	ctx, _ := context.WithTimeout(context.Background(), database.Timeout)
 	objectId := primitive.NewObjectID()
-	_, err := Database.GetDB().Collection(r.CollectionName).InsertOne(ctx, bson.M{
+	_, err := database.getDB().Collection(r.CollectionName).InsertOne(ctx, bson.M{
 		"_id":     objectId,
 		"title":   book.Title,
 		"edition": book.Edition,
