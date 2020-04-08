@@ -8,9 +8,9 @@ import (
 	"time"
 )
 
-var database *MongoDatabase
+var database *mongoDatabase
 
-type MongoDatabase struct {
+type mongoDatabase struct {
 	DatabaseName string
 	DatabaseURI  string
 	Timeout      time.Duration
@@ -19,7 +19,7 @@ type MongoDatabase struct {
 
 // ConnectDB connects program to the MongoDB with specified options.
 func ConnectDB(dbURI string, dbName string, timeout time.Duration) error {
-	database = &MongoDatabase{
+	database = &mongoDatabase{
 		DatabaseName: dbName,
 		DatabaseURI:  dbURI,
 		Timeout:      timeout,
@@ -35,7 +35,7 @@ func MustConnectDB(dbURI string, dbName string, timeout time.Duration) {
 	}
 }
 
-func (m *MongoDatabase) getConn() (*mongo.Client, error) {
+func (m *mongoDatabase) getConn() (*mongo.Client, error) {
 	var err error = nil
 	if m.conn == nil {
 		ctx, _ := context.WithTimeout(context.Background(), m.Timeout)
@@ -45,6 +45,6 @@ func (m *MongoDatabase) getConn() (*mongo.Client, error) {
 	return m.conn, err
 }
 
-func (m *MongoDatabase) getDB() *mongo.Database {
+func (m *mongoDatabase) getDB() *mongo.Database {
 	return m.conn.Database(m.DatabaseName)
 }
