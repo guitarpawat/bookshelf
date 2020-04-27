@@ -42,7 +42,7 @@ func Listen(port int, repo db.Factory) {
 		c.Next()
 	})
 	r.GET("/get", func(c *gin.Context) {
-		book, err := repo.GetBooksRepo().GetById("5e8d42c0d8e5fb1790501d08")
+		book, _, err := repo.GetBooksRepo().GetPaginationSortByTimeDesc(5, "")
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
 		}
