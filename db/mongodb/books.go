@@ -110,6 +110,5 @@ func BookToBson(b book) bson.M {
 		"type":    b.Type,
 		"status":  b.Status,
 		"volume":  b.Volume,
-		"owner":   b.Owner,
 	}
 }

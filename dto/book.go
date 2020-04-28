@@ -11,7 +11,6 @@ type Book struct {
 	Type    BookType
 	Status  BookStatus
 	Volume  []int
-	Owner   string
 	AddTime time.Time
 }
 

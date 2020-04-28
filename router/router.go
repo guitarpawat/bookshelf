@@ -12,18 +12,31 @@ import (
 
 func Listen(port int, repo db.Factory) {
 	r := gin.Default()
+	r.FuncMap = getFuncMap()
 	r.LoadHTMLGlob("html/*.gohtml")
+	r.NoRoute(handleNotFound)
 	r.GET("/ping", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
 	})
 	r.GET("/", func(c *gin.Context) {
+		books, _, err := repo.GetBooksRepo().GetPaginationSortByTimeDesc(3, "")
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
 		c.HTML(http.StatusOK, "index", gin.H{
-			"title": "Hello Home!",
+			"title": "Home | My Bookshelf",
+			"books": books,
 		})
 	})
 	r.GET("/add", func(c *gin.Context) {
+		c.HTML(http.StatusOK, "add", gin.H{
+			"title": "Add Book | My Bookshelf",
+		})
+	})
+	r.GET("/add-book", func(c *gin.Context) {
 		err := repo.GetBooksRepo().Save(dto.Book{
 			ID:      "",
 			Title:   "Test",
@@ -33,7 +46,6 @@ func Listen(port int, repo db.Factory) {
 			Type:    dto.SoftCover,
 			Status:  dto.Read,
 			Volume:  nil,
-			Owner:   "GuITaRPaWaT",
 			AddTime: time.Now(),
 		})
 		if err != nil {
@@ -49,5 +61,6 @@ func Listen(port int, repo db.Factory) {
 		c.JSON(200, book)
 		c.Next()
 	})
+
 	log.Fatalln(r.Run(":" + strconv.Itoa(port)))
 }
