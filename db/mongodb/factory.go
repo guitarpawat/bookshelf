@@ -1,6 +1,7 @@
 package mongodb
 
 import (
+	"github.com/guitarpawat/bookshelf/db"
 	"github.com/guitarpawat/bookshelf/db/repo"
 )
 
@@ -16,7 +17,7 @@ func (f *Factory) GetBooksRepo() repo.BooksRepo {
 
 var instance *Factory
 
-func getInstance() *Factory {
+func getInstance() db.Factory {
 	if instance == nil {
 		instance = &Factory{}
 	}
