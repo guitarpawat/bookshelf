@@ -6,13 +6,14 @@ import (
 )
 
 type Factory struct {
+	booksRepo repo.BooksRepo
 }
 
 func (f *Factory) GetBooksRepo() repo.BooksRepo {
-	if booksRepo == nil {
-		booksRepo = newBooksRepo(DefaultBooksCollectionName)
+	if f.booksRepo == nil {
+		f.booksRepo = newBooksRepo(DefaultBooksCollectionName)
 	}
-	return booksRepo
+	return f.booksRepo
 }
 
 var instance *Factory

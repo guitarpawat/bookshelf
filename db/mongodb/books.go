@@ -8,8 +8,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var booksRepo *BooksRepo
-
 const DefaultBooksCollectionName = "books"
 const MinObjectId = "000000000000000000000000"
 
