@@ -6,26 +6,9 @@
     <body>
         {{template "nav" .}}
         {{if not .books}}
-            <div class="jumbotron">
-                <h4 class="display-4">You don't have any book on your shelf</h4>
-                <p class="lead">Add your books now to keep track all of them!</p>
-                <p class="lead">
-                    <a class="btn btn-primary btn" href="/add" role="button">Add Now</a>
-                </p>
-            </div>
-            <div class="container text-center">
-                <h3>See you soon</h3>
-                <p>Books information will appear here right after you add your first book.</p>
-            </div>
+            {{template "index_onboard" .}}
         {{else}}
-            <div class="jumbotron">
-                <h3>Recently Added Books</h3>
-                <div class="card-group">
-                    {{range $book := .books}}
-                        {{template "card" $book}}
-                    {{end}}
-                </div>
-            </div>
+            {{template "index_body" .}}
         {{end}}
     </body>
 </html>

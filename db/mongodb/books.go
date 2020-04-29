@@ -85,15 +85,19 @@ func (r *BooksRepo) GetById(id string) (dto.Book, error) {
 	return result.Book, nil
 }
 
-func (r *BooksRepo) Save(b dto.Book) error {
+func (r *BooksRepo) Save(b dto.Book) (string, error) {
 	bookData := BookToBson(book{
 		Book: b,
 		ID:   primitive.NewObjectID(),
 	})
 
 	ctx, _ := context.WithTimeout(context.Background(), database.Timeout)
-	_, err := database.getDB().Collection(r.CollectionName).InsertOne(ctx, bookData)
-	return err
+	result, err := database.getDB().Collection(r.CollectionName).InsertOne(ctx, bookData)
+	if err != nil {
+		return "", err
+	}
+
+	return result.InsertedID.(primitive.ObjectID).Hex(), nil
 }
 
 func newBooksRepo(collectionName string) *BooksRepo {

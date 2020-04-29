@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/guitarpawat/bookshelf/db"
 	"github.com/guitarpawat/bookshelf/dto"
+	"github.com/guitarpawat/bookshelf/util"
 	"log"
 	"net/http"
 	"strconv"
@@ -15,11 +16,6 @@ func Listen(port int, repo db.Factory) {
 	r.FuncMap = getFuncMap()
 	r.LoadHTMLGlob("html/*.gohtml")
 	r.NoRoute(handleNotFound)
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
 	r.GET("/", func(c *gin.Context) {
 		books, _, err := repo.GetBooksRepo().GetPaginationSortByTimeDesc(3, "")
 		if err != nil {
@@ -33,33 +29,43 @@ func Listen(port int, repo db.Factory) {
 	})
 	r.GET("/add", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "add", gin.H{
-			"title": "Add Book | My Bookshelf",
+			"title":        "Add Book | My Bookshelf",
+			"bookTypes":    dto.GetBookTypes(),
+			"bookStatuses": dto.GetBookStatuses(),
+			"state":        c.Query("state"),
 		})
 	})
-	r.GET("/add-book", func(c *gin.Context) {
-		err := repo.GetBooksRepo().Save(dto.Book{
+	r.POST("/add", func(c *gin.Context) {
+		bookType, err := dto.ToBookType(util.MustGetString(c.GetPostForm("type")))
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		bookStatus, err := dto.ToBookStatus(util.MustGetString(c.GetPostForm("status")))
+		if err != nil {
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+
+		book := dto.Book{
 			ID:      "",
-			Title:   "Test",
-			Edition: "1",
-			Author:  []string{"GuITaRPaWaT"},
-			Tags:    []string{"test", "hello"},
-			Type:    dto.SoftCover,
-			Status:  dto.Read,
-			Volume:  nil,
+			Title:   util.MustGetString(c.GetPostForm("title")),
+			Edition: util.MustGetString(c.GetPostForm("edition")),
+			Author:  util.SeparateComma(util.MustGetString(c.GetPostForm("authors"))),
+			Tags:    util.SeparateComma(util.MustGetString(c.GetPostForm("tags"))),
+			Type:    bookType,
+			Status:  bookStatus,
+			Volume:  util.SeparateComma(util.MustGetString(c.GetPostForm("volumes"))),
 			AddTime: time.Now(),
-		})
+		}
+
+		_, err = repo.GetBooksRepo().Save(book)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, err)
+			return
 		}
-		c.Next()
-	})
-	r.GET("/get", func(c *gin.Context) {
-		book, _, err := repo.GetBooksRepo().GetPaginationSortByTimeDesc(5, "")
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-		}
-		c.JSON(200, book)
-		c.Next()
+
+		c.Redirect(http.StatusSeeOther, "/add?state=add-success")
 	})
 
 	log.Fatalln(r.Run(":" + strconv.Itoa(port)))

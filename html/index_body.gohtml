@@ -1,0 +1,10 @@
+{{define "index_body"}}
+    <div class="jumbotron">
+        <h2>Recently Added Books</h2>
+        <div class="row">
+            {{range $book := .books}}
+                {{template "card" $book}}
+            {{end}}
+        </div>
+    </div>
+{{end}}

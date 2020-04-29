@@ -1,22 +1,24 @@
 {{define "card"}}
-    <div class="card">
-        <h5 class="card-header">{{.Title}}</h5>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-xs-12 col-lg-6 col-xl-4"><b>Author</b></div>
-                <div class="col">{{iterateStringList .Author}}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-lg-6 col-xl-4"><b>Edition</b></div>
-                <div class="col">{{.Edition}}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-lg-6 col-xl-4"><b>Type</b></div>
-                <div class="col">{{.Type.String}}</div>
-            </div>
-            <div class="row">
-                <div class="col-xs-12 col-lg-6 col-xl-4"><b>Status</b></div>
-                <div class="col">{{.Status.String}}</div>
+    <div class="col-md-4 mt-2">
+        <div class="card">
+            <h5 class="card-header">{{.Title}}</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 col-xl-4"><b>Author</b></div>
+                    <div class="col">{{iterateStringList .Author}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 col-xl-4"><b>Edition</b></div>
+                    <div class="col">{{if not .Edition}}-{{else}}{{.Edition}}{{end}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 col-xl-4"><b>Type</b></div>
+                    <div class="col">{{.Type.String}}</div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-lg-6 col-xl-4"><b>Status</b></div>
+                    <div class="col">{{.Status.String}}</div>
+                </div>
             </div>
         </div>
     </div>

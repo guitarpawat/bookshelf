@@ -15,5 +15,6 @@ type BooksRepo interface {
 	GetPaginationSortByTimeDesc(limit int, lastId string) ([]dto.Book, string, error)
 
 	// Save saves book data to the database the ID and AddTime is ignored and generate by repository.
-	Save(book dto.Book) error
+	// It returns id of the inserted object or an error.
+	Save(book dto.Book) (string, error)
 }
