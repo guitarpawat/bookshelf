@@ -16,7 +16,7 @@ func (f *Factory) GetBooksRepo() repo.BooksRepo {
 
 var instance *Factory
 
-func GetInstance() *Factory {
+func getInstance() *Factory {
 	if instance == nil {
 		instance = &Factory{}
 	}
